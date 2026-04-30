@@ -27,6 +27,13 @@ class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+# 사용자 정보 수정 요청 데이터
+class UserUpdate(BaseModel):
+    email: EmailStr | None = None
+    full_name: str | None = None
+    password: str | None = None
+
+
 # 토큰 응답 데이터
 class Token(BaseModel):
     access_token: str

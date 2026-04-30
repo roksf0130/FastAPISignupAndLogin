@@ -65,6 +65,42 @@ def test_signup_and_login():
     assert response.status_code == 200
     assert response.json()["username"] == "testuser"
 
+    # 4. 회원정보 변경 테스트
+    update_data = {
+        "password": "updatedpassword",
+        "email": "updated@example.com",
+        "full_name": "Updated User",
+    }
+    response = client.put("/users/me", headers=headers, json=update_data)
+    assert response.status_code == 200
+    updated_info = response.json()
+    assert updated_info["email"] == "updated@example.com"
+    assert updated_info["full_name"] == "Updated User"
+
+    # 5. 변경된 비밀번호로 로그인
+    new_login_data = {"username": "testuser", "password": "updatedpassword"}
+    login_response = client.post("/auth/login", data=new_login_data)
+    assert login_response.status_code == 200
+    assert "access_token" in login_response.json()
+
+    # 6.patch 메소드를 이용한 회원정보 변경 테스트
+    update_data = {
+        "password": "updatedpassword2",
+        "email": "updated2@example.com",
+        "full_name": "Updated2 User",
+    }
+    response = client.patch("/users/me", headers=headers, json=update_data)
+    assert response.status_code == 200
+    updated_info = response.json()
+    assert updated_info["email"] == "updated2@example.com"
+    assert updated_info["full_name"] == "Updated2 User"
+
+    # 7. 변경된 비밀번호로 로그인
+    new_login_data = {"username": "testuser", "password": "updatedpassword2"}
+    login_response = client.post("/auth/login", data=new_login_data)
+    assert login_response.status_code == 200
+    assert "access_token" in login_response.json()
+
 
 def test_login_fail():
     # 존재하지 않는 사용자로 로그인 시도
